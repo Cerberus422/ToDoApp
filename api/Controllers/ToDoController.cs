@@ -1,4 +1,5 @@
-﻿using api.Interfaces;
+﻿using api.Dtos;
+using api.Interfaces;
 using api.Mappers;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,10 +9,12 @@ namespace api.Controllers;
 public class ToDoController : ControllerBase
 {
     private readonly IToDoRepository _toDoRepo;
+    private readonly ICategoryRepository _categoryRepo;
 
-    public ToDoController(IToDoRepository toDoRepo)
+    public ToDoController(IToDoRepository toDoRepo, ICategoryRepository categoryRepo)
     {
         _toDoRepo = toDoRepo;
+        _categoryRepo = categoryRepo;
     }
 
     [HttpGet]
@@ -37,4 +40,27 @@ public class ToDoController : ControllerBase
         return Ok(tasksModel);
     }
 
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateTodoDto todoDto) // Creating Task
+    {
+
+        if (todoDto.CategoryId.HasValue)
+        {
+            if (!await _categoryRepo.ExistsAsync(todoDto.CategoryId.Value))
+            {
+                return BadRequest("Category does not exist");
+            }
+        }
+        
+        var todoModel = todoDto.ToToDoFromCreate();
+
+        await _toDoRepo.CreateAsync(todoModel);
+        
+        return CreatedAtAction(
+            nameof(GetById),
+            new { toDoId = todoModel.Id },
+            todoModel.ToToDoDto()
+        );
+    }
+    
 }

@@ -18,6 +18,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 
 builder.Services.AddScoped<IToDoRepository, ToDoRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 
 var app = builder.Build();

@@ -16,4 +16,15 @@ public static class ToDoMapper
             CategoryId = toDoModel.CategoryId
         };
     }
+    
+    public static ToDo ToToDoFromCreate(this CreateTodoDto toDoModel)
+    {
+        return new ToDo
+        {
+            Title = toDoModel.Title,
+            IsCompleted = false,
+            
+            CategoryId = toDoModel.CategoryId
+        };
+    }
 }

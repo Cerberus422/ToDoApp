@@ -27,4 +27,12 @@ public class ToDoRepository : IToDoRepository
 
         return todo;
     }
+
+    public async Task<ToDo> CreateAsync(ToDo todoModel)
+    {
+        await _context.ToDos.AddAsync(todoModel);
+        await _context.SaveChangesAsync();
+
+        return todoModel;
+    }
 }
