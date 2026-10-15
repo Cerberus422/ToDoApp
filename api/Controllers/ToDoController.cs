@@ -23,4 +23,18 @@ public class ToDoController : ControllerBase
 
         return Ok(tasksModel);
     }
+    
+    [HttpGet("{toDoId:int}")]
+    public async Task<IActionResult> GetById([FromRoute] int toDoId) // Showing Task by Id
+    {
+        var todo = await _toDoRepo.GetByIdAsync(toDoId);
+
+        if (todo == null)
+            return NotFound("ToDo not found");
+        
+        var tasksModel = todo.ToToDoDto();
+
+        return Ok(tasksModel);
+    }
+
 }

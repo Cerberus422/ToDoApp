@@ -20,4 +20,11 @@ public class ToDoRepository : IToDoRepository
 
         return todos;
     }
+
+    public async Task<ToDo?> GetByIdAsync(int toDoId)
+    {
+        var todo = await _context.ToDos.FirstOrDefaultAsync(t => t.Id == toDoId);
+
+        return todo;
+    }
 }
