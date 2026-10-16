@@ -57,4 +57,17 @@ public class ToDoRepository : IToDoRepository
 
         return todo;
     }
+
+    public async Task<ToDo?> DeleteAsync(int productId)
+    {
+        var todo = await _context.ToDos.FindAsync(productId);
+
+        if (todo == null)
+            return null;
+
+        _context.ToDos.Remove(todo);
+        await _context.SaveChangesAsync();
+
+        return todo;
+    }
 }

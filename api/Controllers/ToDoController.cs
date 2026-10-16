@@ -80,5 +80,16 @@ public class ToDoController : ControllerBase
             return NotFound("ToDo not found");
 
         return Ok(todo.ToToDoDto());
-    }    
+    }
+
+    [HttpDelete("{todoId:int}")]
+    public async Task<IActionResult> Delete([FromRoute] int todoId) // Deleting Task
+    {
+        var todo = await _toDoRepo.DeleteAsync(todoId);
+
+        if (todo == null)
+            return NotFound("ToDo not found");
+
+        return NoContent();
+    }
 }
