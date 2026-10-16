@@ -1,4 +1,5 @@
 ﻿using api.Data;
+using api.Dtos;
 using api.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using ToDoApp.api.Models;
@@ -34,5 +35,26 @@ public class ToDoRepository : IToDoRepository
         await _context.SaveChangesAsync();
 
         return todoModel;
+    }
+
+    public async Task<ToDo?> PatchAsync(int todoId, PatchToDoDto patchDto)
+    {
+        var todo = await _context.ToDos.FindAsync(todoId);
+        
+        if (todo == null)
+            return null;
+        
+        if (patchDto.Title != null)
+            todo.Title = patchDto.Title;
+        
+        if (patchDto.IsCompleted.HasValue)
+            todo.IsCompleted = patchDto.IsCompleted.Value;
+             
+        if (patchDto.CategoryId.HasValue)   
+            todo.CategoryId = patchDto.CategoryId.Value;
+        
+        await _context.SaveChangesAsync();
+
+        return todo;
     }
 }

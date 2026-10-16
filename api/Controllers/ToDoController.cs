@@ -62,5 +62,23 @@ public class ToDoController : ControllerBase
             todoModel.ToToDoDto()
         );
     }
-    
+
+    [HttpPatch("{todoId:int}")]
+    public async Task<IActionResult> Patch([FromBody] PatchToDoDto todoDto, [FromRoute] int todoId) // Editing Task
+    {
+        if (todoDto.CategoryId.HasValue)
+        {
+            if (!await _categoryRepo.ExistsAsync(todoDto.CategoryId.Value))
+            {
+                return BadRequest("Category does not exist");
+            }
+        }
+        
+        var todo = await _toDoRepo.PatchAsync(todoId, todoDto);
+        
+        if (todo == null)
+            return NotFound("ToDo not found");
+
+        return Ok(todo.ToToDoDto());
+    }    
 }
