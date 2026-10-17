@@ -1,6 +1,7 @@
 ﻿using api.Data;
 using api.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using ToDoApp.api.Models;
 
 namespace api.Repository;
 
@@ -12,7 +13,14 @@ public class CategoryRepository : ICategoryRepository
     {
         _context = context;
     }
-        
+
+    public async Task<List<Category>> GetAllAsync()
+    {
+        var category = await _context.Categories.ToListAsync();
+
+        return category;
+    }
+
     public  Task<bool> ExistsAsync(int categoryId)
     {
         return  _context.Categories.AnyAsync(c => c.Id == categoryId);
