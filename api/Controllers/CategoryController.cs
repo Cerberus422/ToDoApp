@@ -24,5 +24,18 @@ public class CategoryController : ControllerBase
 
         return Ok(categoryModels);
     }
-    
+
+
+    [HttpGet("{categoryId:int}")]
+    public async Task<IActionResult> GetById([FromRoute] int categoryId) // Showing Category by Id
+    {
+        var category = await _categoryRepo.GetByIdAsync(categoryId);
+
+        if (category == null)
+            return NotFound("Category not found");
+
+        var categoryModel = category.ToCategoryDto();
+
+        return Ok(categoryModel);
+    }
 }

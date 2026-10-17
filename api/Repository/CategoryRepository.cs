@@ -21,6 +21,13 @@ public class CategoryRepository : ICategoryRepository
         return category;
     }
 
+    public async Task<Category?> GetByIdAsync(int categoryId)
+    {
+        var category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == categoryId);
+
+        return category;
+    }
+
     public  Task<bool> ExistsAsync(int categoryId)
     {
         return  _context.Categories.AnyAsync(c => c.Id == categoryId);
