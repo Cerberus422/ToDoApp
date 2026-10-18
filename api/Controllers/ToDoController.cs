@@ -52,7 +52,7 @@ public class ToDoController : ControllerBase
             }
         }
         
-        var todoModel = todoDto.ToToDoFromCreate();
+        var todoModel = todoDto.ToToDoFromCreateDto();
 
         await _toDoRepo.CreateAsync(todoModel);
         

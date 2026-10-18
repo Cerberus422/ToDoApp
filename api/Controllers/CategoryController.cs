@@ -44,7 +44,7 @@ public class CategoryController : ControllerBase
     public async Task<IActionResult> Create([FromBody] CreateCategoryDto categoryDto) // Creating Category
     {
 
-        var categoryModel = categoryDto.ToCategoryFromCreate();
+        var categoryModel = categoryDto.ToCategoryFromCreateDto();
 
         await _categoryRepo.CreateAsync(categoryModel);
 
@@ -54,13 +54,17 @@ public class CategoryController : ControllerBase
             categoryModel.ToCategoryDto()
         );
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+
+    [HttpPut("{categoryId:int}")]
+    public async Task<IActionResult> Put([FromBody] UpdateCategoryDto categoryDto, [FromRoute] int categoryId) // Updating Category
+    {
+       
+        var category = await _categoryRepo.PutAsync(categoryId, categoryDto.ToCategoryFromUpdateDto());
+
+        if (category == null)
+            return NotFound("Category does not exist");
+        
+        return Ok(category.ToCategoryDto());
+    }
 }

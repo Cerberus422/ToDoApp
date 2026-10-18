@@ -17,7 +17,7 @@ public static class ToDoMapper
         };
     }
     
-    public static ToDo ToToDoFromCreate(this CreateTodoDto toDoModel)
+    public static ToDo ToToDoFromCreateDto(this CreateTodoDto toDoModel)
     {
         return new ToDo
         {

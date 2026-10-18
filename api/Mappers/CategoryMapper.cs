@@ -15,11 +15,19 @@ public static class CategoryMapper
         };
     }
     
-    public static Category ToCategoryFromCreate(this CreateCategoryDto categoryModel)
+    public static Category ToCategoryFromCreateDto(this CreateCategoryDto categoryModel)
     {
         return new Category
         {
             Name = categoryModel.Name
         };
     }
+    public static Category ToCategoryFromUpdateDto(this UpdateCategoryDto categoryModel)
+    {
+        return new Category
+        {
+            Name = categoryModel.Name
+        };
+    }
+    
 }

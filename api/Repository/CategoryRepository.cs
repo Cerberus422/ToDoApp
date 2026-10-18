@@ -36,6 +36,20 @@ public class CategoryRepository : ICategoryRepository
         return categoryModel;
     }
 
+    public async Task<Category?> PutAsync(int categoryId, Category categoryModel)
+    {
+        var category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == categoryId);
+
+        if (category == null)
+            return null;
+
+        category.Name = categoryModel.Name;
+
+        await _context.SaveChangesAsync();
+
+        return category;
+    }
+
     public  Task<bool> ExistsAsync(int categoryId)
     {
         return  _context.Categories.AnyAsync(c => c.Id == categoryId);
