@@ -28,6 +28,14 @@ public class CategoryRepository : ICategoryRepository
         return category;
     }
 
+    public async Task<Category> CreateAsync(Category categoryModel)
+    {
+        await _context.Categories.AddAsync(categoryModel);
+        await _context.SaveChangesAsync();
+
+        return categoryModel;
+    }
+
     public  Task<bool> ExistsAsync(int categoryId)
     {
         return  _context.Categories.AnyAsync(c => c.Id == categoryId);

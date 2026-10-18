@@ -14,4 +14,12 @@ public static class CategoryMapper
             Name = categoryModel.Name
         };
     }
+    
+    public static Category ToCategoryFromCreate(this CreateCategoryDto categoryModel)
+    {
+        return new Category
+        {
+            Name = categoryModel.Name
+        };
+    }
 }
