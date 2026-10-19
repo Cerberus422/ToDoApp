@@ -11,6 +11,8 @@ public static class ToDoMapper
         {
             Id = toDoModel.Id,
             Title = toDoModel.Title,
+            Difficulty = toDoModel.Difficulty,
+            DueDate = toDoModel.DueDate,
             IsCompleted = toDoModel.IsCompleted,
 
             CategoryId = toDoModel.CategoryId
@@ -22,6 +24,8 @@ public static class ToDoMapper
         return new ToDo
         {
             Title = toDoModel.Title,
+            Difficulty = toDoModel.Difficulty,
+            DueDate = toDoModel.DueDate,
             IsCompleted = false,
             
             CategoryId = toDoModel.CategoryId

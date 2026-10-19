@@ -46,6 +46,12 @@ public class ToDoRepository : IToDoRepository
         
         if (patchDto.Title != null)
             todo.Title = patchDto.Title;
+
+        if (patchDto.Difficulty != null)
+            todo.Difficulty = patchDto.Difficulty;
+        
+        if (patchDto.DueDate.HasValue)
+            todo.DueDate = patchDto.DueDate.Value;
         
         if (patchDto.IsCompleted.HasValue)
             todo.IsCompleted = patchDto.IsCompleted.Value;
