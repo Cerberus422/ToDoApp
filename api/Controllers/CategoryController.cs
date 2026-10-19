@@ -54,8 +54,7 @@ public class CategoryController : ControllerBase
             categoryModel.ToCategoryDto()
         );
     }
-
-
+    
     [HttpPut("{categoryId:int}")]
     public async Task<IActionResult> Put([FromBody] UpdateCategoryDto categoryDto, [FromRoute] int categoryId) // Updating Category
     {
@@ -66,5 +65,16 @@ public class CategoryController : ControllerBase
             return NotFound("Category does not exist");
         
         return Ok(category.ToCategoryDto());
+    }
+
+    [HttpDelete("{category:int}")]
+    public async Task<IActionResult> Delete([FromRoute] int categoryId) // Deleting Category
+    {
+        var category = await _categoryRepo.DeleteAsync(categoryId);
+            
+        if (category == null)
+            return NotFound("Category does not exist");
+
+        return NoContent();
     }
 }

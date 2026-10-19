@@ -8,5 +8,6 @@ public interface ICategoryRepository
     Task<Category?> GetByIdAsync(int categoryId); // showing Category by Id
     Task<Category> CreateAsync(Category categoryModel); // creating Category
     Task<Category?> PutAsync(int categoryId, Category categoryModel); // updating Category
+    Task<Category?> DeleteAsync(int categoryId);  // deleting Category
     Task<bool> ExistsAsync(int categoryId); // checking if Category exists
 }
