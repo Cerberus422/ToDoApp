@@ -1,10 +1,32 @@
+# .NET build files
 **/bin/
 **/obj/
+
+# IDE files
 .idea/
 .vs/
 *.user
 *.suo
+*.iml
+
+# Rider files
+/shelf/
+/workspace.xml
+/modules.xml
+/contentModel.xml
+/projectSettingsUpdater.xml
+/queries/
+/dataSources/
+/dataSources.local.xml
+
+# Environment and secrets
 .env
 .env.*
+appsettings.Development.json
+
+# SQL Server database files
 *.mdf
 *.ldf
+
+# HTTP Client
+/httpRequests/
