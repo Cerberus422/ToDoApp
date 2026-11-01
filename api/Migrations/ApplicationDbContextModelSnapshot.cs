@@ -228,11 +228,17 @@ namespace api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("AppUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
 
                     b.ToTable("Category");
                 });
@@ -244,6 +250,10 @@ namespace api.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AppUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int?>("CategoryId")
                         .HasColumnType("int");
@@ -262,6 +272,8 @@ namespace api.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
 
                     b.HasIndex("CategoryId");
 
@@ -319,13 +331,39 @@ namespace api.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ToDoApp.api.Models.Category", b =>
+                {
+                    b.HasOne("ToDoApp.api.Models.AppUser", "AppUser")
+                        .WithMany("Categories")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+                });
+
             modelBuilder.Entity("ToDoApp.api.Models.ToDo", b =>
                 {
+                    b.HasOne("ToDoApp.api.Models.AppUser", "AppUser")
+                        .WithMany("Todos")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("ToDoApp.api.Models.Category", "Category")
                         .WithMany("Todos")
                         .HasForeignKey("CategoryId");
 
+                    b.Navigation("AppUser");
+
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("ToDoApp.api.Models.AppUser", b =>
+                {
+                    b.Navigation("Categories");
+
+                    b.Navigation("Todos");
                 });
 
             modelBuilder.Entity("ToDoApp.api.Models.Category", b =>
