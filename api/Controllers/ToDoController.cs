@@ -1,4 +1,5 @@
 ﻿using api.Dtos;
+using api.Extensions;
 using api.Interfaces;
 using api.Mappers;
 using Microsoft.AspNetCore.Authorization;
@@ -20,9 +21,12 @@ public class ToDoController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize]
     public async Task<IActionResult> GetAll() // Showing all Tasks
     {
-        var todos = await _toDoRepo.GetAllAsync();
+        var userId = User.GetUserId();
+        
+        var todos = await _toDoRepo.GetAllAsync(userId);
         
         var tasksModel = todos.Select(t => t.ToToDoDto()).ToList();
 
@@ -30,9 +34,12 @@ public class ToDoController : ControllerBase
     }
     
     [HttpGet("{toDoId:int}")]
+    [Authorize]
     public async Task<IActionResult> GetById([FromRoute] int toDoId) // Showing Task by Id
     {
-        var todo = await _toDoRepo.GetByIdAsync(toDoId);
+        var userId = User.GetUserId();
+        
+        var todo = await _toDoRepo.GetByIdAsync(toDoId, userId);
 
         if (todo == null)
             return NotFound("ToDo not found");
@@ -43,12 +50,14 @@ public class ToDoController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
     public async Task<IActionResult> Create([FromBody] CreateTodoDto todoDto) // Creating Task
     {
-
+        var userId = User.GetUserId();
+        
         if (todoDto.CategoryId.HasValue)
         {
-            if (!await _categoryRepo.ExistsAsync(todoDto.CategoryId.Value))
+            if (!await _categoryRepo.ExistsAsync(todoDto.CategoryId.Value, userId))
             {
                 return BadRequest("Category does not exist");
             }
@@ -56,7 +65,7 @@ public class ToDoController : ControllerBase
         
         var todoModel = todoDto.ToToDoFromCreateDto();
 
-        await _toDoRepo.CreateAsync(todoModel);
+        await _toDoRepo.CreateAsync(todoModel, userId);
         
         return CreatedAtAction(
             nameof(GetById),
@@ -66,17 +75,20 @@ public class ToDoController : ControllerBase
     }
 
     [HttpPatch("{todoId:int}")]
+    [Authorize]
     public async Task<IActionResult> Patch([FromBody] PatchToDoDto todoDto, [FromRoute] int todoId) // Editing Task
     {
+        var userId = User.GetUserId();
+        
         if (todoDto.CategoryId.HasValue)
         {
-            if (!await _categoryRepo.ExistsAsync(todoDto.CategoryId.Value))
+            if (!await _categoryRepo.ExistsAsync(todoDto.CategoryId.Value, userId))
             {
                 return BadRequest("Category does not exist");
             }
         }
         
-        var todo = await _toDoRepo.PatchAsync(todoId, todoDto);
+        var todo = await _toDoRepo.PatchAsync(todoId, todoDto, userId);
         
         if (todo == null)
             return NotFound("ToDo not found");
@@ -85,9 +97,12 @@ public class ToDoController : ControllerBase
     }
 
     [HttpDelete("{todoId:int}")]
+    [Authorize]
     public async Task<IActionResult> Delete([FromRoute] int todoId) // Deleting Task
     {
-        var todo = await _toDoRepo.DeleteAsync(todoId);
+        var userId = User.GetUserId();
+        
+        var todo = await _toDoRepo.DeleteAsync(todoId, userId);
 
         if (todo == null)
             return NotFound("ToDo not found");

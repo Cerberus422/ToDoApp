@@ -1,4 +1,5 @@
 ﻿using api.Dtos.Category;
+using api.Extensions;
 using api.Interfaces;
 using api.Mappers;
 using Microsoft.AspNetCore.Authorization;
@@ -18,9 +19,11 @@ public class CategoryController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize]
     public async Task<IActionResult> GetAll() // Showing all categories
     {
-        var categories = await _categoryRepo.GetAllAsync();
+        var userId = User.GetUserId();
+        var categories = await _categoryRepo.GetAllAsync(userId);
 
         var categoryModels = categories.Select(c => c.ToCategoryDto()).ToList();
 
@@ -29,9 +32,11 @@ public class CategoryController : ControllerBase
 
 
     [HttpGet("{categoryId:int}")]
+    [Authorize]
     public async Task<IActionResult> GetById([FromRoute] int categoryId) // Showing Category by Id
     {
-        var category = await _categoryRepo.GetByIdAsync(categoryId);
+        var userId = User.GetUserId();
+        var category = await _categoryRepo.GetByIdAsync(categoryId,userId );
 
         if (category == null)
             return NotFound("Category not found");
@@ -42,12 +47,13 @@ public class CategoryController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
     public async Task<IActionResult> Create([FromBody] CreateCategoryDto categoryDto) // Creating Category
     {
-
+        var userId = User.GetUserId();
         var categoryModel = categoryDto.ToCategoryFromCreateDto();
 
-        await _categoryRepo.CreateAsync(categoryModel);
+        await _categoryRepo.CreateAsync(categoryModel, userId);
 
         return CreatedAtAction(
             nameof(GetById),
@@ -57,10 +63,11 @@ public class CategoryController : ControllerBase
     }
     
     [HttpPut("{categoryId:int}")]
+    [Authorize]
     public async Task<IActionResult> Put([FromBody] UpdateCategoryDto categoryDto, [FromRoute] int categoryId) // Updating Category
     {
-       
-        var category = await _categoryRepo.PutAsync(categoryId, categoryDto.ToCategoryFromUpdateDto());
+        var userId = User.GetUserId();
+        var category = await _categoryRepo.PutAsync(categoryId, categoryDto.ToCategoryFromUpdateDto(), userId);
 
         if (category == null)
             return NotFound("Category does not exist");
@@ -68,10 +75,12 @@ public class CategoryController : ControllerBase
         return Ok(category.ToCategoryDto());
     }
 
-    [HttpDelete("{category:int}")]
+    [HttpDelete("{categoryId:int}")]
+    [Authorize]
     public async Task<IActionResult> Delete([FromRoute] int categoryId) // Deleting Category
     {
-        var category = await _categoryRepo.DeleteAsync(categoryId);
+        var userId = User.GetUserId();
+        var category = await _categoryRepo.DeleteAsync(categoryId, userId);
             
         if (category == null)
             return NotFound("Category does not exist");

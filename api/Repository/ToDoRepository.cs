@@ -15,31 +15,34 @@ public class ToDoRepository : IToDoRepository
         _context = context;
     }
     
-    public async Task<List<ToDo>> GetAllAsync()
+    public async Task<List<ToDo>> GetAllAsync(string userId)
     {
-        var todos = await _context.ToDos.ToListAsync();
+        var todos = await _context.ToDos.Where(t => t.AppUserId == userId).ToListAsync();
 
         return todos;
     }
 
-    public async Task<ToDo?> GetByIdAsync(int toDoId)
+    public async Task<ToDo?> GetByIdAsync(int toDoId, string userId)
     {
-        var todo = await _context.ToDos.FirstOrDefaultAsync(t => t.Id == toDoId);
+        var todo = await _context.ToDos.Where(t => t.AppUserId == userId).FirstOrDefaultAsync(t => t.Id == toDoId);
 
         return todo;
     }
 
-    public async Task<ToDo> CreateAsync(ToDo todoModel)
+    public async Task<ToDo> CreateAsync(ToDo todoModel, string userId)
     {
+        todoModel.AppUserId = userId;
+        
         await _context.ToDos.AddAsync(todoModel);
         await _context.SaveChangesAsync();
 
         return todoModel;
     }
 
-    public async Task<ToDo?> PatchAsync(int todoId, PatchToDoDto patchDto)
+    public async Task<ToDo?> PatchAsync(int todoId, PatchToDoDto patchDto, string userId)
     {
-        var todo = await _context.ToDos.FindAsync(todoId);
+        var todo = await _context.ToDos
+            .FirstOrDefaultAsync(t => t.Id == todoId && t.AppUserId == userId);
         
         if (todo == null)
             return null;
@@ -64,9 +67,10 @@ public class ToDoRepository : IToDoRepository
         return todo;
     }
 
-    public async Task<ToDo?> DeleteAsync(int productId)
+    public async Task<ToDo?> DeleteAsync(int productId, string userId)
     {
-        var todo = await _context.ToDos.FindAsync(productId);
+        var todo = await _context.ToDos
+            .FirstOrDefaultAsync(t => t.Id == productId && t.AppUserId == userId);
 
         if (todo == null)
             return null;
